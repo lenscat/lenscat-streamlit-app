@@ -15,7 +15,8 @@ catalog_img = st.empty() # Placeholder
 # Search by lens type
 lens_type_option = st.multiselect(
     "Lens type",
-    lenscat.Catalog._allowed_type
+    lenscat.Catalog._allowed_type,
+    default=lenscat.Catalog._allowed_type
 )
 catalog = catalog.search(lens_type=lens_type_option)
 
