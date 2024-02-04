@@ -25,6 +25,7 @@ RA_range = st.slider(
     "Right ascension [deg]",
     min_value=0,
     max_value=360,
+    value=(0, 360),
     step=1,
 )
 # Search by DEC
@@ -32,6 +33,7 @@ DEC_range = st.slider(
     "Declination [deg]",
     min_value=-90,
     max_value=90,
+    value=(-90, 90),
     step=1,
 )
 # Search by lens type
