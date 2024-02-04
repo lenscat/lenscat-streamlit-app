@@ -6,6 +6,14 @@ from matplotlib import pyplot as plt
 import lenscat
 from lenscat.utils import *
 
+_all = "all"
+
+def convert_all_to_None(x):
+    if x == _all:
+        return None
+    else:
+        return x
+
 st.title("Interactive Web App for lenscat")
 # This catalog
 catalog = lenscat.catalog
@@ -15,16 +23,16 @@ catalog_img = st.empty() # Placeholder
 # Search by lens type
 lens_type_option = st.selectbox(
     "Lens type",
-    (None, *lenscat.Catalog._allowed_type),
+    (_all, *lenscat.Catalog._allowed_type),
 )
 # Search by grading
 grading_option = st.selectbox(
     "Grading",
-    (None, *lenscat.Catalog._allowed_grading),
+    (_all, *lenscat.Catalog._allowed_grading),
 )
 catalog = catalog.search(
-    grading=grading_option,
-    lens_type=lens_type_option,
+    grading=convert_all_to_None(grading_option),
+    lens_type=convert_all_to_None(lens_type_option),
 )
 
 # Write catalog
