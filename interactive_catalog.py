@@ -13,12 +13,19 @@ catalog = lenscat.catalog
 catalog_img = st.empty() # Placeholder
 
 # Search by lens type
-lens_type_option = st.multiselect(
+lens_type_option = st.selectbox(
     "Lens type",
-    lenscat.Catalog._allowed_type,
-    default=lenscat.Catalog._allowed_type
+    (None, *lenscat.Catalog._allowed_type),
 )
-catalog = catalog.search(lens_type=lens_type_option)
+# Search by grading
+grading_option = st.selectbox(
+    "Grading",
+    (None, *lenscat.Catalog._allowed_grading),
+)
+catalog = catalog.search(
+    grading=grading_option,
+    lens_type=lens_type_option,
+)
 
 # Write catalog
 st.write(catalog.to_pandas())
