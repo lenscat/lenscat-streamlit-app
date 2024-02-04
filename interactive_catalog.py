@@ -20,6 +20,20 @@ catalog = lenscat.catalog
 
 catalog_img = st.empty() # Placeholder
 
+# Search by RA
+RA_range = st.slider(
+    "Right ascension [deg]",
+    min_value=0,
+    max_value=360,
+    step=1,
+)
+# Search by DEC
+DEC_range = st.slider(
+    "Declination [deg]",
+    min_value=-90,
+    max_value=90,
+    step=1,
+)
 # Search by lens type
 lens_type_option = st.selectbox(
     "Lens type",
@@ -31,6 +45,8 @@ grading_option = st.selectbox(
     (_all, *lenscat.Catalog._allowed_grading),
 )
 catalog = catalog.search(
+    RA_range=RA_range,
+    DEC_range=DEC_range,
     grading=convert_all_to_None(grading_option),
     lens_type=convert_all_to_None(lens_type_option),
 )
