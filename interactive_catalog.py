@@ -8,7 +8,7 @@ from lenscat.utils import *
 from lenscat._version import __version__
 
 _all = "all"
-_repo = ""
+_self = "interactive_catalog.py"
 
 def convert_all_to_None(x):
     if x == _all:
@@ -82,7 +82,7 @@ zlens_min = expander.number_input(
 )
 # Reset button
 if expander.button("Reset", type="primary"):
-    st.rerun()
+    st.switch_page(_self)
 
 catalog = catalog.search(
     RA_range=RA_range,
@@ -99,8 +99,5 @@ st.dataframe(catalog.to_pandas(), hide_index=True)
 plot_catalog(catalog)
 catalog_img.image("catalog.png")
 
-# Print version
-st.caption("lenscat version "+__version__)
-
-# Show GitHub link
-st.markdown("[GitHub repository for lenscat](https://github.com/lenscat/lenscat)")
+# Footnote
+st.caption("Using lenscat version "+__version__+". [GitHub repository for lenscat](https://github.com/lenscat/lenscat)")
