@@ -177,7 +177,13 @@ if st.session_state.use_hms_in_RA:
     catalog_df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"}, inplace=True)
 else:
     catalog_df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"}, inplace=True)
-st.dataframe(catalog_df, hide_index=True)
+st.dataframe(
+    catalog_df,
+    hide_index=True,
+    column_config={
+        "ref": st.column_config.LinkColumn(),
+    }
+)
 
 # Plot catalog
 plot_catalog(catalog)
