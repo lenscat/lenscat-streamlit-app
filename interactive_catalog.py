@@ -8,7 +8,7 @@ from lenscat.utils import *
 from lenscat._version import __version__
 
 _all = "all"
-_url = "https://lenscat.streamlit.app"
+_repo = ""
 
 def convert_all_to_None(x):
     if x == _all:
@@ -82,7 +82,7 @@ zlens_min = expander.number_input(
 )
 # Reset button
 if expander.button("Reset", type="primary"):
-    st.page_link(_url) # Redirect to itself without using .rerun()
+    st.rerun()
 
 catalog = catalog.search(
     RA_range=RA_range,
@@ -101,3 +101,6 @@ catalog_img.image("catalog.png")
 
 # Print version
 st.caption("lenscat version "+__version__)
+
+# Show GitHub link
+st.markdown("[GitHub repository for lenscat](https://github.com/lenscat/lenscat)")
