@@ -86,6 +86,7 @@ zlens_min_option = expander.number_input(
 )
 # Reset button
 def reset():
+    st.write(type(st.session_state.RA_range))
     st.session_state.lens_type = _all
     st.session_state.grading = _all
     st.session_state.zlens_min = None
