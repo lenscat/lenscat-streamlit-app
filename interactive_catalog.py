@@ -58,22 +58,50 @@ catalog = lenscat.catalog
 
 catalog_img = st.empty() # Placeholder
 
+# Toggle for using hms instead of deg for RA
+st.toggle(
+    "Use hour-minute-second instead of degree for right ascension",
+    value=False,
+    key="use_hms_in_RA",
+)
+
+if "RA_range" not in st.session_state.keys():
+    st.session_state["RA_range"] = (0, 360) # Internally always use deg
+
+def update_RA_range(RA_range, format):
+    if format == "deg":
+        st.session_state["RA_range"] = RA_range # No change is needed
+    elif format == "hms":
+        _sky_coord = SkyCoord(ra=RA_range, dec=['00h00m00s', '00h00m00s'])
+        st.session_state["RA_range"] = (_sky_coord[0].ra.value, _sky_coord[1].ra.value)
+    else:
+        raise ValueError(f"Does not understand {format}")
+
 expander = st.expander("Search/filter catalog", expanded=True)
 # Search by RA
-RA_range_option = expander.slider(
-    "Right ascension [deg]",
-    min_value=0,
-    max_value=360,
-    value=(0, 360),
-    step=1,
-    key="RA_range",
-)
-expander.slider(
-    "Right ascension [hms]",
-    value=(time.min, time.max),
-    step=timedelta(minutes=15),
-    format="HH[h]mm[m]ss[s]"
-)
+RA_slider = expander.empty()
+if st.session_state["use_hms_in_RA"] == False:
+    RA_slider.slider(
+        "Right ascension [deg]",
+        min_value=0,
+        max_value=360,
+        value=(0, 360),
+        step=1,
+        key="RA_range_deg",
+        on_change=update_RA_range,
+        args=(st.session_state.RA_range_deg, "deg"),
+    )
+else:
+    RA_slider.slider(
+        "Right ascension [hms]",
+        value=(time.min, time.max),
+        step=timedelta(minutes=15),
+        format="HH[h]mm[m]ss[s]",
+        key="RA_range_hms",
+        on_change=update_RA_range,
+        args=(st.session_state.RA_range_hms, "hms")
+    )
+    # Update *internally* 
 # Search by DEC
 DEC_range_option = expander.slider(
     "Declination [deg]",
@@ -113,18 +141,11 @@ def reset():
 expander.button("Reset", type="primary", on_click=reset)
 
 catalog = catalog.search(
-    RA_range=RA_range_option,
+    RA_range=st.session_state["RA_range"],
     DEC_range=DEC_range_option,
     zlens_range=convert_to_zlens_range(zlens_min_option),
     grading=convert_all_to_None(grading_option),
     lens_type=convert_all_to_None(lens_type_option),
-)
-
-# Toggle for using hms instead of deg for RA
-st.toggle(
-    "Use hour-minute-second instead of degree for right ascension",
-    value=False,
-    key="use_hms_in_RA",
 )
 
 # Write catalog as an interactive table
