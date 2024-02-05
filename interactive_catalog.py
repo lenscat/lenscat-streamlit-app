@@ -8,6 +8,7 @@ from lenscat.utils import *
 from lenscat._version import __version__
 
 _all = "all"
+_url = "https://lenscat.streamlit.app"
 
 def convert_all_to_None(x):
     if x == _all:
@@ -79,6 +80,10 @@ zlens_min = expander.number_input(
     value=None,
     step=0.1,
 )
+# Reset button
+if expander.button("Reset", type="primary"):
+    st.page_link(_url) # Redirect to itself without using .rerun()
+
 catalog = catalog.search(
     RA_range=RA_range,
     DEC_range=DEC_range,
