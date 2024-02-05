@@ -27,7 +27,7 @@ st.set_page_config(
     layout="centered",
 )
 # Title
-st.latex(r"$\texttt{lenscat}$")
+st.latex(r"\texttt{lenscat}")
 # This catalog
 catalog = lenscat.catalog
 
