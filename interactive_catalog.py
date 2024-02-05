@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+from astropy.coordinates import SkyCoord
 import matplotlib
 from matplotlib import pyplot as plt
 import sys
@@ -114,13 +115,21 @@ catalog = catalog.search(
 
 # Toggle for using hms instead of deg for RA
 st.toggle(
-    "Use hour instead of degree for right ascension",
+    "Use hour-minute-second instead of degree for right ascension",
     value=False,
     key="use_hms_in_RA",
 )
 
 # Write catalog as an interactive table
-st.dataframe(catalog.to_pandas(), hide_index=True)
+catalog_df = catalog.to_pandas()
+# NOTE Internally the catalog *always* uses degree
+if st.session_state.use_hms_in_RA:
+    sky_coord = SkyCoord(ra=catalog["RA"], dec=catalog["DEC"]) # Already with units
+    catalog_df["RA"] = [c.split(' ')[0] for c in sky_coord.to_string('hmsdms')]
+    catalog_df.rename({"RA": "RA [hms]", "DEC": "DEC [deg]"})
+else:
+    catalog_df.rename({"RA": "RA [deg]", "DEC": "DEC [deg]"})
+st.dataframe(catalog_df, hide_index=True)
 
 # Plot catalog
 plot_catalog(catalog)
