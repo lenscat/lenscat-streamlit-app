@@ -16,7 +16,7 @@ def convert_all_to_None(x):
         return x
 
 def convert_to_zlens_range(zlens_min):
-    if zlens_min is None:
+    if zlens_min is None or np.isclose(zlens_min, 0.0):
         return None # Do not filter
     else:
         return (zlens_min, np.inf)
@@ -92,7 +92,7 @@ grading_option = expander.selectbox(
 zlens_min_option = expander.number_input(
     "Minimum lens redshift",
     min_value=0.0,
-    value=None,
+    value=0.0,
     step=0.1,
     key="zlens_min",
 )
