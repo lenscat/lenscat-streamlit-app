@@ -27,7 +27,7 @@ st.set_page_config(
     layout="centered",
     menu_items={
         "Report a bug": "https://github.com/lenscat/lenscat/issues",
-        "About": "# Interactive Web App for lenscat. See our GitHub repository [here](https://github.com/lenscat/lenscat).",
+        "About": "Interactive Web App for lenscat. See our GitHub repository [here](https://github.com/lenscat/lenscat).",
     },
 )
 st.markdown('''
