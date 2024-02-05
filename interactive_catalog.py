@@ -54,6 +54,7 @@ RA_range = expander.slider(
     max_value=360,
     value=(0, 360),
     step=1,
+    key="RA_range",
 )
 # Search by DEC
 DEC_range = expander.slider(
@@ -82,7 +83,7 @@ zlens_min = expander.number_input(
 )
 # Reset button
 if expander.button("Reset", type="primary"):
-    st.switch_page(_self)
+    st.echo(st.session_state.RA_range)
 
 catalog = catalog.search(
     RA_range=RA_range,
