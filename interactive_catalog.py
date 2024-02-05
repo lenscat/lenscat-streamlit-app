@@ -9,6 +9,8 @@ import sys
 import subprocess
 
 _all = "all"
+_RA_default_range_deg = (0, 360)
+_RA_default_range_hms = (time.min, time.max)
 
 def convert_all_to_None(x):
     if x == _all:
@@ -67,7 +69,7 @@ st.toggle(
 )
 
 if "RA_range" not in st.session_state.keys():
-    st.session_state["RA_range"] = (0, 360) # Internally always use deg
+    st.session_state["RA_range"] = _RA_default_range_deg # Internally always use deg
 
 def convert_time_to_hms_str(t):
     hms_str = "{}h{}m{}.{}s".format(
@@ -97,9 +99,9 @@ RA_slider = expander.empty()
 if st.session_state["use_hms_in_RA"] == False:
     RA_slider.slider(
         "Right ascension [deg]",
-        min_value=0,
-        max_value=360,
-        value=(0, 360),
+        min_value=_RA_default_range_deg[0],
+        max_value=_RA_default_range_deg[1],
+        value=_RA_default_range_deg,
         step=1,
         key="RA_range_deg",
         on_change=update_RA_range,
@@ -108,7 +110,7 @@ if st.session_state["use_hms_in_RA"] == False:
 else:
     RA_slider.slider(
         "Right ascension [hms]",
-        value=(time.min, time.max),
+        value=_RA_default_range_hms,
         step=timedelta(minutes=15),
         format="HH[h]mm[m]ss[s]",
         key="RA_range_hms",
@@ -147,7 +149,11 @@ zlens_min_option = expander.number_input(
 )
 # Reset button
 def reset():
-    st.session_state.RA_range = (0, 360)
+    st.session_state["RA_range"] = (0, 360)
+    if "RA_range_deg" in st.session_state.keys():
+        st.session_state["RA_range_deg"] = _RA_default_range_deg
+    if "RA_range_hms" in st.session_state.keys():
+        st.session_state["RA_range_hms"] = _RA_default_range_hms
     st.session_state.DEC_range = (-90, 90)
     st.session_state.lens_type = _all
     st.session_state.grading = _all
