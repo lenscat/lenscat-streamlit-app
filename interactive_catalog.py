@@ -71,8 +71,8 @@ RA_range_option = expander.slider(
 expander.slider(
     "Right ascension [hms]",
     min_value=time(0, 0, 0),
-    max_value=time(24, 00, 00),
-    value=(time(0, 0, 0), time(24, 00, 00)),
+    max_value=time(23, 59, 59),
+    value=(time(0, 0, 0), time(23, 59, 59)),
     step=timedelta(minutes=15),
     format="HH[h]mm[m]ss[s]",
 )
