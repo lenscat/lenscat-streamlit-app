@@ -181,7 +181,7 @@ st.dataframe(
     catalog_df,
     hide_index=True,
     column_config={
-        "ref": st.column_config.LinkColumn(),
+        "ref": st.column_config.LinkColumn(validate="^https://.+$"),
     }
 )
 
