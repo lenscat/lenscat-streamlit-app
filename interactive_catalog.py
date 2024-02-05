@@ -9,7 +9,7 @@ from lenscat.utils import *
 from lenscat._version import __version__
 
 _all = "all"
-_self = "interactive_catalog.py"
+_RA_range = (0, 360) # Also the default
 
 def convert_all_to_None(x):
     if x == _all:
@@ -53,7 +53,7 @@ RA_range = expander.slider(
     "Right ascension [deg]",
     min_value=0,
     max_value=360,
-    value=(0, 360),
+    value=_RA_range,
     step=1,
 )
 # Search by DEC
@@ -83,8 +83,7 @@ zlens_min = expander.number_input(
 )
 # Reset button
 if expander.button("Reset", type="primary"):
-    # Life hack
-    pyautogui.hotkey("ctrl", "F5")
+    _RA_range = (0, 360) # FIXME
 
 catalog = catalog.search(
     RA_range=RA_range,
