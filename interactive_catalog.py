@@ -45,7 +45,7 @@ catalog = lenscat.catalog
 
 catalog_img = st.empty() # Placeholder
 
-expander = st.expander("Filter catalog")
+expander = st.expander("Search/filter catalog", expanded=True)
 # Search by RA
 RA_range = expander.slider(
     "Right ascension [deg]",
