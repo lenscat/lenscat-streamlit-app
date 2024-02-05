@@ -47,7 +47,7 @@ catalog_img = st.empty() # Placeholder
 
 expander = st.expander("Search/filter catalog", expanded=True)
 # Search by RA
-RA_range = expander.slider(
+RA_range_option = expander.slider(
     "Right ascension [deg]",
     min_value=0,
     max_value=360,
@@ -56,7 +56,7 @@ RA_range = expander.slider(
     key="RA_range",
 )
 # Search by DEC
-DEC_range = expander.slider(
+DEC_range_option = expander.slider(
     "Declination [deg]",
     min_value=-90,
     max_value=90,
@@ -68,14 +68,16 @@ DEC_range = expander.slider(
 lens_type_option = expander.selectbox(
     "Lens type",
     (_all, *lenscat.Catalog._allowed_type),
+    key="lens_type",
 )
 # Search by grading
 grading_option = expander.selectbox(
     "Grading",
     (_all, *lenscat.Catalog._allowed_grading),
+    key="grading",
 )
 # Search by lens redshift
-zlens_min = expander.number_input(
+zlens_min_option = expander.number_input(
     "Minimum lens redshift",
     min_value=0.0,
     value=None,
@@ -83,16 +85,13 @@ zlens_min = expander.number_input(
 )
 # Reset button
 def reset():
-    st.write(type(st.session_state.RA_range))
-    st.write(st.session_state.RA_range)
-    st.write(type(st.session_state.DEC_range))
-    st.write(st.session_state.DEC_range)
+    st.session_state.lens_type = _all
 expander.button("Reset", type="primary", on_click=reset)
 
 catalog = catalog.search(
-    RA_range=RA_range,
-    DEC_range=DEC_range,
-    zlens_range=convert_to_zlens_range(zlens_min),
+    RA_range=RA_range_option,
+    DEC_range=DEC_range_option,
+    zlens_range=convert_to_zlens_range(zlens_min_option),
     grading=convert_all_to_None(grading_option),
     lens_type=convert_all_to_None(lens_type_option),
 )
