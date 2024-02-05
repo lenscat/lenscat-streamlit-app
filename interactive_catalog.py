@@ -78,7 +78,8 @@ def convert_time_to_hms_str(t):
 
     return hms_str
 
-def update_RA_range(RA_range, format):
+def update_RA_range(key, format):
+    RA_range = st.session_state[key]
     if format == "deg":
         st.session_state["RA_range"] = RA_range # No change is needed
     elif format == "hms":
@@ -101,7 +102,7 @@ if st.session_state["use_hms_in_RA"] == False:
         step=1,
         key="RA_range_deg",
         on_change=update_RA_range,
-        args=(st.session_state.RA_range_deg, "deg"),
+        args=("RA_range_deg", "deg"),
     )
 else:
     RA_slider.slider(
@@ -111,7 +112,7 @@ else:
         format="HH[h]mm[m]ss[s]",
         key="RA_range_hms",
         on_change=update_RA_range,
-        args=(st.session_state.RA_range_hms, "hms")
+        args=("RA_range_hms", "hms")
     )
     # Update *internally* 
 # Search by DEC
