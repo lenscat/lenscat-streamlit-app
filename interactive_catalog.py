@@ -5,6 +5,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 import lenscat
 from lenscat.utils import *
+from lenscat._version import __version__
 
 _all = "all"
 
@@ -75,4 +76,4 @@ plot_catalog(catalog)
 catalog_img.image("catalog.png")
 
 # Print version
-st.write("Using lenscat version "+lenscat.__version__)
+st.write("Using lenscat version "+__version__)
