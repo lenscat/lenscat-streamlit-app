@@ -26,8 +26,16 @@ st.set_page_config(
     page_icon="https://avatars.githubusercontent.com/u/157114494?s=200&v=4",
     layout="centered",
 )
+st.markdown('''
+<style>
+.katex-html {
+    text-align: left;
+}
+</style>''',
+unsafe_allow_html=True
+)
 # Title
-st.latex(r"\texttt{lenscat}")
+st.latex(r"{\huge \texttt{lenscat}}")
 # This catalog
 catalog = lenscat.catalog
 
