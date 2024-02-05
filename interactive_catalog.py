@@ -126,9 +126,9 @@ catalog_df = catalog.to_pandas()
 if st.session_state.use_hms_in_RA:
     sky_coord = SkyCoord(ra=catalog["RA"], dec=catalog["DEC"]) # Already with units
     catalog_df["RA"] = [c.split(' ')[0] for c in sky_coord.to_string('hmsdms')]
-    catalog_df.rename({"RA": "RA [hms]", "DEC": "DEC [deg]"})
+    catalog_df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"})
 else:
-    catalog_df.rename({"RA": "RA [deg]", "DEC": "DEC [deg]"})
+    catalog_df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"})
 st.dataframe(catalog_df, hide_index=True)
 
 # Plot catalog
