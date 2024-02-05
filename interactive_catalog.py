@@ -73,7 +73,7 @@ expander.slider(
     min_value=time(0, 0, 0),
     max_value=time(23, 59, 59),
     value=(time(0, 0, 0), time(23, 59, 59)),
-    step=timedelta(minutes=15),
+    step=timedelta(minutes=30),
     format="HH[h]mm[m]ss[s]",
 )
 # Search by DEC
