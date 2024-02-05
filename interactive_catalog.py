@@ -68,14 +68,6 @@ RA_range_option = expander.slider(
     step=1,
     key="RA_range",
 )
-expander.slider(
-    "Right ascension [hms]",
-    min_value=time(0, 0, 0),
-    max_value=time(23, 59, 59),
-    value=(time(0, 0, 0), time(23, 59, 59)),
-    step=timedelta(minutes=30),
-    format="HH[h]mm[m]ss[s]",
-)
 # Search by DEC
 DEC_range_option = expander.slider(
     "Declination [deg]",
