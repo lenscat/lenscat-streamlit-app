@@ -112,6 +112,13 @@ catalog = catalog.search(
     lens_type=convert_all_to_None(lens_type_option),
 )
 
+# Toggle for using hms instead of deg for RA
+st.toggle(
+    "Use hour instead of degree for right ascension",
+    value=False,
+    key="use_hms_in_RA",
+)
+
 # Write catalog as an interactive table
 st.dataframe(catalog.to_pandas(), hide_index=True)
 
