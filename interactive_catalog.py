@@ -72,6 +72,7 @@ expander.slider(
     "Right ascension [hms]",
     value=(time.min, time.max),
     step=timedelta(minutes=15),
+    format="HH[h]mm[m]ss[s]"
 )
 # Search by DEC
 DEC_range_option = expander.slider(
