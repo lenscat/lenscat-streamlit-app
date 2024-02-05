@@ -82,7 +82,7 @@ zlens_min = expander.number_input(
 )
 # Reset button
 if expander.button("Reset", type="primary"):
-    _RA_range = (0, 360) # FIXME
+    RA_range = (0, 360) # FIXME
 
 catalog = catalog.search(
     RA_range=RA_range,
