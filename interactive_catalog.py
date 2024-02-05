@@ -83,7 +83,7 @@ zlens_min = expander.number_input(
 )
 # Reset button
 if expander.button("Reset", type="primary"):
-    st.echo(st.session_state.RA_range)
+    st.write(st.session_state.RA_range)
 
 catalog = catalog.search(
     RA_range=RA_range,
