@@ -68,11 +68,23 @@ st.toggle(
 if "RA_range" not in st.session_state.keys():
     st.session_state["RA_range"] = (0, 360) # Internally always use deg
 
+def convert_time_to_hms_str(t):
+    hms_str = "{}h{}m{}.{}s".format(
+        str(t.hour).zfill(2),
+        str(t.minute).zfill(2),
+        str(t.second).zfill(2),
+        str(t.microsecond).zfill(6),
+    )
+
+    return hms_str
+
 def update_RA_range(RA_range, format):
     if format == "deg":
         st.session_state["RA_range"] = RA_range # No change is needed
     elif format == "hms":
-        _sky_coord = SkyCoord(ra=RA_range, dec=['00h00m00s', '00h00m00s'])
+        RA_min = convert_time_to_hms_str(RA_range[0])
+        RA_max = convert_time_to_hms_str(RA_range[1])
+        _sky_coord = SkyCoord(ra=[RA_min, RA_max], dec=['00h00m00s', '00h00m00s'])
         st.session_state["RA_range"] = (_sky_coord[0].ra.value, _sky_coord[1].ra.value)
     else:
         raise ValueError(f"Does not understand {format}")
