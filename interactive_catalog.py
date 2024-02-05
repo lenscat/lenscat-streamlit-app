@@ -21,7 +21,6 @@ def convert_to_zlens_range(zlens_min):
         return (zlens_min, np.inf)
 
 st.title("Interactive Web App for lenscat")
-st.write("Using lenscat version "+lenscat.__version__)
 # This catalog
 catalog = lenscat.catalog
 
@@ -74,3 +73,6 @@ st.write(catalog.to_pandas())
 # Plot catalog
 plot_catalog(catalog)
 catalog_img.image("catalog.png")
+
+# Print version
+st.write("Using lenscat version "+lenscat.__version__)
