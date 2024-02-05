@@ -8,7 +8,6 @@ from lenscat.utils import *
 from lenscat._version import __version__
 
 _all = "all"
-_RA_range = (0, 360) # Also the default
 
 def convert_all_to_None(x):
     if x == _all:
@@ -52,8 +51,9 @@ RA_range = expander.slider(
     "Right ascension [deg]",
     min_value=0,
     max_value=360,
-    value=_RA_range,
+    value=(0, 360),
     step=1,
+    key="RA_range",
 )
 # Search by DEC
 DEC_range = expander.slider(
@@ -62,6 +62,7 @@ DEC_range = expander.slider(
     max_value=90,
     value=(-90, 90),
     step=1,
+    key="DEC_range",
 )
 # Search by lens type
 lens_type_option = expander.selectbox(
@@ -81,8 +82,12 @@ zlens_min = expander.number_input(
     step=0.1,
 )
 # Reset button
-if expander.button("Reset", type="primary"):
-    RA_range = (0, 360) # FIXME
+def reset():
+    st.write(type(st.session_state.RA_range))
+    st.write(st.session_state.RA_range)
+    st.write(type(st.session_state.DEC_range))
+    st.write(st.session_state.DEC_range)
+expander.button("Reset", type="primary", on_click=reset)
 
 catalog = catalog.search(
     RA_range=RA_range,
