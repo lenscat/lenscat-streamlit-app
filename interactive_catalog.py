@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import matplotlib
 from matplotlib import pyplot as plt
-import pyautogui
 import lenscat
 from lenscat.utils import *
 from lenscat._version import __version__
