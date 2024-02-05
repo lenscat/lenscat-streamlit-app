@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+from datetime import time, timedelta
 from astropy.coordinates import SkyCoord
 import matplotlib
 from matplotlib import pyplot as plt
@@ -66,6 +67,14 @@ RA_range_option = expander.slider(
     value=(0, 360),
     step=1,
     key="RA_range",
+)
+expander.slider(
+    "Right ascension [hms]",
+    min_value=time(0, 0, 0),
+    max_value=time(24, 00, 00),
+    value=(time(0, 0, 0), time(24, 00, 00)),
+    step=timedelta(minutes=15),
+    format="HH[h]mm[m]ss[s]",
 )
 # Search by DEC
 DEC_range_option = expander.slider(
