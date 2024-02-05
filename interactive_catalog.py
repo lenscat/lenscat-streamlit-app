@@ -5,7 +5,6 @@ import matplotlib
 from matplotlib import pyplot as plt
 import sys
 import subprocess
-import importlib
 
 _all = "all"
 
