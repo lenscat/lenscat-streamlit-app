@@ -45,8 +45,9 @@ catalog = lenscat.catalog
 
 catalog_img = st.empty() # Placeholder
 
+expander = st.expander("Filter catalog")
 # Search by RA
-RA_range = st.slider(
+RA_range = expander.slider(
     "Right ascension [deg]",
     min_value=0,
     max_value=360,
@@ -54,7 +55,7 @@ RA_range = st.slider(
     step=1,
 )
 # Search by DEC
-DEC_range = st.slider(
+DEC_range = expander.slider(
     "Declination [deg]",
     min_value=-90,
     max_value=90,
@@ -62,17 +63,17 @@ DEC_range = st.slider(
     step=1,
 )
 # Search by lens type
-lens_type_option = st.selectbox(
+lens_type_option = expander.selectbox(
     "Lens type",
     (_all, *lenscat.Catalog._allowed_type),
 )
 # Search by grading
-grading_option = st.selectbox(
+grading_option = expander.selectbox(
     "Grading",
     (_all, *lenscat.Catalog._allowed_grading),
 )
 # Search by lens redshift
-zlens_min = st.number_input(
+zlens_min = expander.number_input(
     "Minimum lens redshift",
     min_value=0.0,
     value=None,
