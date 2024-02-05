@@ -8,7 +8,6 @@ import subprocess
 import importlib
 
 _all = "all"
-_checked_update = False
 
 def convert_all_to_None(x):
     if x == _all:
@@ -43,9 +42,12 @@ unsafe_allow_html=True
 st.latex(r"{\Huge \texttt{lenscat}}")
 
 # Upgrade to the latest release of lenscat
-if not _checked_update:
+if "checked_update" not in st.session_state.keys():
+    st.session_state["checked_update"] = False
+
+if not st.session_state["checked_update"]:
     subprocess.run([f"{sys.executable}", "-m", "pip", "install", "lenscat", "--upgrade"])
-    _checked_update = True
+    st.session_state["checked_update"] = True
 
 import lenscat
 from lenscat.utils import *
