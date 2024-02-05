@@ -76,4 +76,4 @@ plot_catalog(catalog)
 catalog_img.image("catalog.png")
 
 # Print version
-st.write("Using lenscat version "+__version__)
+st.write("lenscat version "+__version__)
