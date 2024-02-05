@@ -82,10 +82,13 @@ zlens_min_option = expander.number_input(
     min_value=0.0,
     value=None,
     step=0.1,
+    key="zlens_min",
 )
 # Reset button
 def reset():
     st.session_state.lens_type = _all
+    st.session_state.grading = _all
+    st.session_state.zlens_min = None
 expander.button("Reset", type="primary", on_click=reset)
 
 catalog = catalog.search(
