@@ -6,9 +6,6 @@ from matplotlib import pyplot as plt
 import sys
 import subprocess
 import importlib
-import lenscat
-from lenscat.utils import *
-from lenscat._version import __version__
 
 _all = "all"
 
@@ -23,10 +20,6 @@ def convert_to_zlens_range(zlens_min):
         return None # Do not filter
     else:
         return (zlens_min, np.inf)
-
-def update_lenscat():
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'lenscat', '--upgrade'])
-    importlib.reload(lenscat)
 
 st.set_page_config(
     page_title="Interactive Web App for lenscat",
@@ -47,8 +40,13 @@ unsafe_allow_html=True
 )
 # Title
 st.latex(r"{\Huge \texttt{lenscat}}")
-# Update to the latest release of lenscat
-update_lenscat()
+
+# Upgrade to the latest release of lenscat
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'lenscat', '--upgrade'])
+
+import lenscat
+from lenscat.utils import *
+from lenscat._version import __version__
 # This catalog
 catalog = lenscat.catalog
 
