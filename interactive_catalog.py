@@ -41,6 +41,8 @@ unsafe_allow_html=True
 )
 # Title
 st.latex(r"{\Huge \texttt{lenscat}}")
+st.caption("A public and community-contributed catalog of known strong gravitational lenses.")
+st.divider()
 
 # Upgrade to the latest release of lenscat
 if "checked_update" not in st.session_state.keys():
