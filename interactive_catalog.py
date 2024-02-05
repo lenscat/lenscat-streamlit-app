@@ -25,6 +25,10 @@ st.set_page_config(
     page_title="Interactive Web App for lenscat",
     page_icon="https://avatars.githubusercontent.com/u/157114494?s=200&v=4",
     layout="centered",
+    menu_items={
+        "Report a bug": "https://github.com/lenscat/lenscat/issues",
+        "About": "# Interactive Web App for lenscat. See our GitHub repository [here](https://github.com/lenscat/lenscat).",
+    },
 )
 st.markdown('''
 <style>
@@ -35,7 +39,7 @@ st.markdown('''
 unsafe_allow_html=True
 )
 # Title
-st.latex(r"{\huge \texttt{lenscat}}")
+st.latex(r"{\Huge \texttt{lenscat}}")
 # This catalog
 catalog = lenscat.catalog
 
