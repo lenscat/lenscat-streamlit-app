@@ -42,7 +42,7 @@ unsafe_allow_html=True
 st.latex(r"{\Huge \texttt{lenscat}}")
 
 # Upgrade to the latest release of lenscat
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'lenscat', '--upgrade'])
+subprocess.run([f"{sys.executable}", "-m", "pip", "install", "lenscat", "--upgrade"])
 
 import lenscat
 from lenscat.utils import *
