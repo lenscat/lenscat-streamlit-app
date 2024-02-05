@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib
 from matplotlib import pyplot as plt
+import pyautogui
 import lenscat
 from lenscat.utils import *
 from lenscat._version import __version__
@@ -54,7 +55,6 @@ RA_range = expander.slider(
     max_value=360,
     value=(0, 360),
     step=1,
-    key="RA_range",
 )
 # Search by DEC
 DEC_range = expander.slider(
@@ -83,7 +83,8 @@ zlens_min = expander.number_input(
 )
 # Reset button
 if expander.button("Reset", type="primary"):
-    st.session_state["RA_range"] = (0, 360)
+    # Life hack
+    pyautogui.hotkey("ctrl", "F5")
 
 catalog = catalog.search(
     RA_range=RA_range,
