@@ -21,7 +21,13 @@ def convert_to_zlens_range(zlens_min):
     else:
         return (zlens_min, np.inf)
 
-st.title("Interactive Web App for lenscat")
+st.set_page_config(
+    page_title="Interactive Web App for lenscat",
+    page_icon="https://avatars.githubusercontent.com/u/157114494?s=200&v=4",
+    layout="centered",
+)
+# Title
+st.latex(r"$\texttt{lenscat}$")
 # This catalog
 catalog = lenscat.catalog
 
@@ -68,8 +74,8 @@ catalog = catalog.search(
     lens_type=convert_all_to_None(lens_type_option),
 )
 
-# Write catalog
-st.write(catalog.to_pandas())
+# Write catalog as an interactive table
+st.dataframe(catalog.to_pandas(), hide_index=True)
 
 # Plot catalog
 plot_catalog(catalog)
