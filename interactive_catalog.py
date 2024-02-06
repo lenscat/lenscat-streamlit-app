@@ -183,7 +183,7 @@ st.dataframe(
     catalog_df,
     hide_index=True,
 )
-st.caption("Matched {}/{} entries in the catalog", len(catalog_df), st.session_state["nentries"])
+st.caption("Matched {}/{} entries in the catalog".format(len(catalog_df), st.session_state["nentries"]))
 
 # Plot catalog
 plot_catalog(catalog)
