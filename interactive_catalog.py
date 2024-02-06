@@ -58,6 +58,8 @@ from lenscat.utils import *
 from lenscat._version import __version__
 # This catalog
 catalog = lenscat.catalog
+# Record the total number of entries
+st.session_state["nentries"] = len(catalog)
 
 catalog_img = st.empty() # Placeholder
 
@@ -181,10 +183,12 @@ st.dataframe(
     catalog_df,
     hide_index=True,
 )
+st.caption("Matched {}/{} entries in the catalog", len(catalog_df), st.session_state["nentries"])
 
 # Plot catalog
 plot_catalog(catalog)
 catalog_img.image("catalog.png")
 
+st.divider()
 # Footnote
 st.caption("Using lenscat version "+__version__+". [GitHub repository for lenscat](https://github.com/lenscat/lenscat)")
