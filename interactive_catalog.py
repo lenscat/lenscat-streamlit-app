@@ -187,10 +187,17 @@ st.caption("Matched {}/{} entries in the catalog".format(len(catalog_df), st.ses
 
 from streamlit_javascript import st_javascript
 st_theme = st_javascript("""window.getComputedStyle(window.parent.document.getElementsByClassName("stApp")[0]).getPropertyValue("color-scheme")""")
-st.write(f"Currently using the {st_theme} mode")
+# st_theme can be either 'light' or 'dark'
 
 # Plot catalog
-plot_catalog(catalog)
+_plot_in_dark_theme = False
+_unit_for_RA = "deg"
+if st_theme == "dark":
+    _plot_in_dark_theme = True
+if st.session_state["use_hms_in_RA"]:
+    _unit_for_RA = "hms"
+
+plot_catalog(catalog, RA_unit=_unit_for_RA, dark_theme=_plot_in_dark_theme)
 catalog_img.image("catalog.png")
 
 st.divider()
