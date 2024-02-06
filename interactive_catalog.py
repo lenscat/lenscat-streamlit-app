@@ -189,6 +189,8 @@ st.caption("Matched {}/{} entries in the catalog".format(len(catalog_df), st.ses
 plot_catalog(catalog)
 catalog_img.image("catalog.png")
 
+bc = st.get_option("theme.backgroundColor")
+st.write(f"Currently using {bc} as the background color.")
 st.divider()
 # Footnote
 st.caption("Using lenscat version "+__version__+". [GitHub repository for lenscat](https://github.com/lenscat/lenscat)")
