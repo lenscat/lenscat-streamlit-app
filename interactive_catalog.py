@@ -130,7 +130,7 @@ if st.session_state["use_hms_in_RA"] == False:
         "Right ascension [deg]",
         min_value=int(_RA_default_range_deg[0]),
         max_value=int(_RA_default_range_deg[1]),
-        value=(int(st.session_state["RA_range"])[0], int(st.session_state["RA_range"])[1]),
+        value=(int(st.session_state["RA_range"][0]), int(st.session_state["RA_range"][1])),
         step=1,
         key="RA_range_deg",
         on_change=update_RA_range,
