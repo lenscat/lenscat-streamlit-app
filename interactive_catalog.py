@@ -15,7 +15,6 @@ def convert_hms_str_to_deg(hms_str):
     _coord = SkyCoord(ra=hms_str, dec='00h00m00s')
     return _coord.ra.value
 
-@np.vectorize
 def convert_deg_to_hms_str(deg):
     _coord = SkyCoord(ra=deg*u.deg, dec=0*u.deg)
     return _coord.to_string('hmsdms').split(' ')[0]
@@ -204,7 +203,7 @@ catalog = catalog.search(
 catalog_df = catalog.to_pandas()
 # NOTE Internally the catalog *always* uses degree
 if st.session_state.use_hms_in_RA:
-    catalog_df["RA"] = convert_deg_to_hms_str(catalog["RA"].to_numpy())
+    catalog_df["RA"] = [convert_deg_to_hms_str(ra) for ra in catalog["RA"].to_numpy()]
     catalog_df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"}, inplace=True)
 else:
     catalog_df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"}, inplace=True)
