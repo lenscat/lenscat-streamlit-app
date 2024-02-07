@@ -128,8 +128,8 @@ RA_slider = expander.empty()
 if st.session_state["use_hms_in_RA"] == False:
     RA_slider.slider(
         "Right ascension [deg]",
-        min_value=int(_RA_default_range_deg[0]),
-        max_value=int(_RA_default_range_deg[1]),
+        min_value=0,
+        max_value=360,
         value=(int(st.session_state["RA_range"][0]), int(st.session_state["RA_range"][1])),
         step=1,
         key="RA_range_deg",
