@@ -204,7 +204,7 @@ catalog = catalog.search(
 catalog_df = catalog.to_pandas()
 # NOTE Internally the catalog *always* uses degree
 if st.session_state.use_hms_in_RA:
-    catalog_df["RA"] = [convert_deg_to_hms_str(ra) for ra in catalog["RA"].to_numpy()]
+    catalog_df["RA"] = [convert_deg_to_hms_str(ra) for ra in catalog_df["RA"].to_numpy()]
     catalog_df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"}, inplace=True)
 else:
     catalog_df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"}, inplace=True)
