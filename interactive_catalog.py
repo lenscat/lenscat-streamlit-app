@@ -54,10 +54,7 @@ def convert_to_zlens_range(zlens_min):
         return (zlens_min, np.inf)
 
 _RA_default_range_hms = (time.min, time.max)
-_RA_default_range_deg = (
-    convert_hms_str_to_deg(convert_time_to_hms_str(time.min)),
-    convert_hms_str_to_deg(convert_time_to_hms_str(time.max))
-)
+_RA_default_range_deg = (0, 360)
 
 st.set_page_config(
     page_title="Interactive Web App for lenscat",
