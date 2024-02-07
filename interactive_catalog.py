@@ -20,19 +20,16 @@ def convert_deg_to_hms_str(deg):
     return _coord.to_string('hmsdms').split(' ')[0]
 
 def convert_hms_str_to_time(hms_str):
-    # Debug
-    try:
-        _h = int(hms_str.split('h')[0]) # Between 0 and 23
-        _m = int(hms_str.split('h')[1].split('m')[0]) # Between 0 and 59
-        _s = int(hms_str.split('h')[1].split('m')[1].split('s')[0].split('.')[0])
-        _microsec = hms_str.split('h')[1].split('m')[1].split('s')[0].split('.')[1]
-        if _microsec is None:
-            return time(hour=_h, minute=_m, second=_s)
-        else:
-            microsec = int(_microsec.ljust(6, '0'))
-            return time(hour=_h, minute=_m, second=_s, microsecond=_microsec)
-    except:
-        raise ValueError(hms_str)
+    _h = int(hms_str.split('h')[0]) # Between 0 and 23
+    _m = int(hms_str.split('h')[1].split('m')[0]) # Between 0 and 59
+    _s = hms_str.split('h')[1].split('m')[1].split('s')[0].split('.')
+    if len(_s) == 1:
+        _s = int(_s[0])
+        return time(hour=_h, minute=_m, second=_s)
+    else:
+        _microsec = int(_s[1].ljust(6, '0'))
+        _s = int(_s[0])
+        return time(hour=_h, minute=_m, second=_s, microsecond=_microsec)
 
 def convert_time_to_hms_str(t):
     hms_str = "{}h{}m{}.{}s".format(
