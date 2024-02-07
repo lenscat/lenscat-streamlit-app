@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from datetime import time, timedelta
+from astropy import units as u
 from astropy.coordinates import SkyCoord
 import matplotlib
 from matplotlib import pyplot as plt
@@ -9,8 +10,36 @@ import sys
 import subprocess
 
 _all = "all"
-_RA_default_range_deg = (0, 360)
-_RA_default_range_hms = (time.min, time.max)
+
+def convert_hms_str_to_deg(hms_str):
+    _coord = SkyCoord(ra=hms_str, dec='00h00m00s')
+    return _coord.ra.value
+
+@np.vectorize
+def convert_deg_to_hms_str(deg):
+    _coord = SkyCoord(ra=deg*u.deg, dec=0*u.deg)
+    return _coord.to_string('hmsdms').split(' ')[0]
+
+def convert_hms_str_to_time(hms_str):
+    _h = int(hms_str.split('h')[0]) # Between 0 and 23
+    _m = int(hms_str.split('h')[1].split('m')[0]) # Between 0 and 59
+    _s = int(hms_str.split('h')[1].split('m')[1].split('s')[0].split('.')[0])
+    _microsec = hms_str.split('h')[1].split('m')[1].split('s')[0].split('.')[1]
+    if _microsec is None:
+        return time(hour=_h, minute=_m, second=_s)
+    else:
+        _microsec = int(_microsec.ljust(6, '0'))
+        return time(hour=_h, minute=_m, second=_s, microsecond=_microsec)
+
+def convert_time_to_hms_str(t):
+    hms_str = "{}h{}m{}.{}s".format(
+        str(t.hour).zfill(2),
+        str(t.minute).zfill(2),
+        str(t.second).zfill(2),
+        str(t.microsecond).zfill(6),
+    )
+
+    return hms_str
 
 def convert_all_to_None(x):
     if x == _all:
@@ -23,6 +52,12 @@ def convert_to_zlens_range(zlens_min):
         return None # Do not filter
     else:
         return (zlens_min, np.inf)
+
+_RA_default_range_hms = (time.min, time.max)
+_RA_default_range_deg = (
+    convert_hms_str_to_deg(convert_time_to_hms_str(time.min)),
+    convert_hms_str_to_deg(convert_time_to_hms_str(time.max))
+)
 
 st.set_page_config(
     page_title="Interactive Web App for lenscat",
@@ -73,25 +108,17 @@ st.toggle(
 if "RA_range" not in st.session_state.keys():
     st.session_state["RA_range"] = _RA_default_range_deg # Internally always use deg
 
-def convert_time_to_hms_str(t):
-    hms_str = "{}h{}m{}.{}s".format(
-        str(t.hour).zfill(2),
-        str(t.minute).zfill(2),
-        str(t.second).zfill(2),
-        str(t.microsecond).zfill(6),
-    )
-
-    return hms_str
-
 def update_RA_range(key, format):
     RA_range = st.session_state[key]
     if format == "deg":
-        st.session_state["RA_range"] = RA_range # No change is needed
+        st.session_state["RA_range"] = RA_range # No change is needed for the internal state
     elif format == "hms":
         RA_min = convert_time_to_hms_str(RA_range[0])
         RA_max = convert_time_to_hms_str(RA_range[1])
-        _sky_coord = SkyCoord(ra=[RA_min, RA_max], dec=['00h00m00s', '00h00m00s'])
-        st.session_state["RA_range"] = (_sky_coord[0].ra.value, _sky_coord[1].ra.value)
+        st.session_state["RA_range"] = (
+            convert_hms_str_to_deg(RA_min),
+            convert_hms_str_to_deg(RA_max)
+        )
     else:
         raise ValueError(f"Does not understand {format}")
 
@@ -103,7 +130,7 @@ if st.session_state["use_hms_in_RA"] == False:
         "Right ascension [deg]",
         min_value=_RA_default_range_deg[0],
         max_value=_RA_default_range_deg[1],
-        value=_RA_default_range_deg,
+        value=st.session_state["RA_range"],
         step=1,
         key="RA_range_deg",
         on_change=update_RA_range,
@@ -112,7 +139,10 @@ if st.session_state["use_hms_in_RA"] == False:
 else:
     RA_slider.slider(
         "Right ascension [hms]",
-        value=_RA_default_range_hms,
+        value=(
+            convert_hms_str_to_time(convert_deg_to_hms_str(st.session_state["RA_range"][0])),
+            convert_hms_str_to_time(convert_deg_to_hms_str(st.session_state["RA_range"][1]))
+        ),
         step=timedelta(minutes=15),
         format="HH[h]mm[m]ss[s]",
         key="RA_range_hms",
@@ -151,7 +181,7 @@ zlens_min_option = expander.number_input(
 )
 # Reset button
 def reset():
-    st.session_state["RA_range"] = (0, 360)
+    st.session_state["RA_range"] = _RA_default_range_deg
     if "RA_range_deg" in st.session_state.keys():
         st.session_state["RA_range_deg"] = _RA_default_range_deg
     if "RA_range_hms" in st.session_state.keys():
@@ -174,8 +204,7 @@ catalog = catalog.search(
 catalog_df = catalog.to_pandas()
 # NOTE Internally the catalog *always* uses degree
 if st.session_state.use_hms_in_RA:
-    sky_coord = SkyCoord(ra=catalog["RA"], dec=catalog["DEC"]) # Already with units
-    catalog_df["RA"] = [c.split(' ')[0] for c in sky_coord.to_string('hmsdms')]
+    catalog_df["RA"] = convert_deg_to_hms_str(catalog["RA"].to_numpy())
     catalog_df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"}, inplace=True)
 else:
     catalog_df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"}, inplace=True)
