@@ -31,6 +31,14 @@ def convert_hms_str_to_time(hms_str):
         _s = int(_s[0])
         return time(hour=_h, minute=_m, second=_s, microsecond=_microsec)
 
+def convert_deg_to_time(deg):
+    if np.isclose(deg, 360):
+        return time.max
+    elif np.isclose(deg, 0):
+        return time.min
+    else:
+        return convert_hms_str_to_time(convert_deg_to_hms_str(deg))
+
 def convert_time_to_hms_str(t):
     hms_str = "{}h{}m{}.{}s".format(
         str(t.hour).zfill(2),
@@ -137,8 +145,8 @@ else:
     RA_slider.slider(
         "Right ascension [hms]",
         value=(
-            convert_hms_str_to_time(convert_deg_to_hms_str(st.session_state["RA_range"][0])),
-            convert_hms_str_to_time(convert_deg_to_hms_str(st.session_state["RA_range"][1]))
+            convert_deg_to_time(st.session_state["RA_range"][0]),
+            convert_deg_to_time(st.session_state["RA_range"][1])
         ),
         step=timedelta(minutes=15),
         format="HH[h]mm[m]ss[s]",
