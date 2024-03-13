@@ -127,9 +127,9 @@ def update_RA_range(key, format):
     else:
         raise ValueError(f"Does not understand {format}")
 
-expander = st.expander("Search/filter catalog", expanded=True)
+filter_expander = st.expander("Search/filter catalog", expanded=True)
 # Search by RA
-RA_slider = expander.empty()
+RA_slider = filter_expander.empty()
 if st.session_state["use_hms_in_RA"] == False:
     RA_slider.slider(
         "Right ascension [deg]",
@@ -156,7 +156,7 @@ else:
     )
     # Update *internally* 
 # Search by DEC
-DEC_range_option = expander.slider(
+DEC_range_option = filter_expander.slider(
     "Declination [deg]",
     min_value=-90,
     max_value=90,
@@ -165,19 +165,19 @@ DEC_range_option = expander.slider(
     key="DEC_range",
 )
 # Search by lens type
-lens_type_option = expander.selectbox(
+lens_type_option = filter_expander.selectbox(
     "Lens type",
     (_all, *lenscat.Catalog._allowed_type),
     key="lens_type",
 )
 # Search by grading
-grading_option = expander.selectbox(
+grading_option = filter_expander.selectbox(
     "Grading",
     (_all, *lenscat.Catalog._allowed_grading),
     key="grading",
 )
 # Search by lens redshift
-zlens_min_option = expander.number_input(
+zlens_min_option = filter_expander.number_input(
     "Minimum lens redshift",
     min_value=0.0,
     value=0.0,
@@ -195,7 +195,7 @@ def reset():
     st.session_state.lens_type = _all
     st.session_state.grading = _all
     st.session_state.zlens_min = None
-expander.button("Reset", type="primary", on_click=reset)
+filter_expander.button("Reset", type="primary", on_click=reset)
 
 catalog = catalog.search(
     RA_range=st.session_state["RA_range"],
