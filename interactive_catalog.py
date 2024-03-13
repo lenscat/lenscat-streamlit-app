@@ -111,7 +111,7 @@ _plot_in_dark_theme = False
 if st_theme == "dark":
     _plot_in_dark_theme = True
 
-catalog_img = st.empty() # Placeholder
+img = st.empty() # Placeholder
 
 # Toggle for using hms instead of deg for RA
 st.toggle(
@@ -226,55 +226,63 @@ skymap_str = crossmatch_expander.text_input(
     key="skymap_str",
     value="",
 )
-skymap_upload = crossmatch_expander.file_uploader(
-    "Or Upload a FITS skymap",
-    type=["fits", "fits.gz"],
-    key="skymap_upload",
-)
+_searched_prob_threshold_default = 0.7
 searched_prob_threshold_option = crossmatch_expander.slider(
     "Searched probability threshold",
     min_value=0.0,
     max_value=1.0,
-    value=0.7,
+    value=_searched_prob_threshold_default,
     step=0.05,
     key="searched_prob_threshold",
 )
 
-if skymap_upload is not None:
-    skymap_to_crossmatch = skymap_upload
-elif skymap_str != "":
+if skymap_str != "":
     skymap_to_crossmatch = skymap_str
 else:
     skymap_to_crossmatch = None
     
 if skymap_to_crossmatch is not None:
-    crossmatch_result = catalog.crossmatch(skymap_to_crossmatch)
-    crossmatch_result.plot(
-        filename="output.png",
-        searched_prob_threshold=float(searched_prob_threshold_option),
-        RA_unit=_unit_for_RA,
-        dark_theme=_plot_in_dark_theme,
-    )
-    st.session_state["show_crossmatch_res"] = True
+    try:
+        crossmatch_result = catalog.crossmatch(skymap_to_crossmatch)
+        crossmatch_result.plot(
+            filename="output.png",
+            searched_prob_threshold=float(searched_prob_threshold_option),
+            RA_unit=_unit_for_RA,
+            dark_theme=_plot_in_dark_theme,
+        )
+        st.session_state["show_crossmatch_res"] = True
+    except:
+        pass # Fail silently
 
 def reset_crossmatch():
     st.session_state["show_crossmatch_res"] = False
     st.session_state["skymap_str"] = ""
+    st.session_state["searched_prob_threshold"] = _searched_prob_threshold_default
 crossmatch_expander.button("Reset", type="primary", key="reset_crossmatch", on_click=reset_crossmatch)
 
 # Write catalog as an interactive table
-catalog_df = catalog.to_pandas()
+if st.session_state["show_crossmatch_res"]:
+    df = crossmatch_result[crossmatch_result["searched probability"] <= float(searched_prob_threshold_option)].to_pandas()
+    column_names = df.columns.to_list()
+    # Move ref to the last column
+    column_names.remove("ref")
+    column_names.append("ref")
+    df = df[column_names]
+    # Add back unit for searched area
+    df.rename(columns={"searched area": "searched area [deg^2]"}, inplace=True)
+else:
+    df = catalog.to_pandas()
 # NOTE Internally the catalog *always* uses degree
 if st.session_state.use_hms_in_RA:
-    catalog_df["RA"] = [convert_deg_to_hms_str(ra) for ra in catalog["RA"]]
-    catalog_df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"}, inplace=True)
+    df["RA"] = [convert_deg_to_hms_str(ra) for ra in df["RA"]]
+    df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"}, inplace=True)
 else:
-    catalog_df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"}, inplace=True)
+    df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"}, inplace=True)
 st.dataframe(
-    catalog_df,
+    df,
     hide_index=True,
 )
-st.caption("Matched {}/{} entries in the catalog".format(len(catalog_df), st.session_state["nentries"]))
+st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
 
 # Plot catalog
 if not st.session_state["show_crossmatch_res"]:
@@ -284,7 +292,7 @@ if not st.session_state["show_crossmatch_res"]:
         dark_theme=_plot_in_dark_theme
     )
 
-catalog_img.image("output.png")
+img.image("output.png")
 
 st.divider()
 # Footnote
