@@ -100,6 +100,16 @@ from lenscat._version import __version__
 catalog = lenscat.catalog
 # Record the total number of entries
 st.session_state["nentries"] = len(catalog)
+# Flag for showing crossmatch result
+if "show_crossmatch_res" not in st.session_state.keys():
+    st.session_state["show_crossmatch_res"] = False
+
+from streamlit_javascript import st_javascript
+st_theme = st_javascript("""window.getComputedStyle(window.parent.document.getElementsByClassName("stApp")[0]).getPropertyValue("color-scheme")""")
+# st_theme can be either 'light' or 'dark'
+_plot_in_dark_theme = False
+if st_theme == "dark":
+    _plot_in_dark_theme = True
 
 catalog_img = st.empty() # Placeholder
 
@@ -109,6 +119,9 @@ st.toggle(
     value=False,
     key="use_hms_in_RA",
 )
+_unit_for_RA = "deg"
+if st.session_state["use_hms_in_RA"]:
+    _unit_for_RA = "hms"
 
 if "RA_range" not in st.session_state.keys():
     st.session_state["RA_range"] = _RA_default_range_deg # Internally always use deg
@@ -127,6 +140,7 @@ def update_RA_range(key, format):
     else:
         raise ValueError(f"Does not understand {format}")
 
+# Filter expander
 filter_expander = st.expander("Search/filter catalog", expanded=True)
 # Search by RA
 RA_slider = filter_expander.empty()
@@ -185,7 +199,7 @@ zlens_min_option = filter_expander.number_input(
     key="zlens_min",
 )
 # Reset button
-def reset():
+def reset_filter():
     st.session_state["RA_range"] = _RA_default_range_deg
     if "RA_range_deg" in st.session_state.keys():
         st.session_state["RA_range_deg"] = _RA_default_range_deg
@@ -195,7 +209,7 @@ def reset():
     st.session_state.lens_type = _all
     st.session_state.grading = _all
     st.session_state.zlens_min = None
-filter_expander.button("Reset", type="primary", on_click=reset)
+filter_expander.button("Reset", type="primary", key="reset_filter", on_click=reset_filter)
 
 catalog = catalog.search(
     RA_range=st.session_state["RA_range"],
@@ -204,6 +218,49 @@ catalog = catalog.search(
     grading=convert_all_to_None(grading_option),
     lens_type=convert_all_to_None(lens_type_option),
 )
+
+# Crossmatch expander
+crossmatch_expander = st.expander("Crossmatch with a transient event", expanded=False)
+skymap_str = crossmatch_expander.text_input(
+    "Name of a transient event or URL to a FITS skymap",
+    key="skymap_str",
+    value="",
+)
+skymap_upload = crossmatch_expander.file_uploader(
+    "Or Upload a FITS skymap",
+    type=["fits", "fits.gz"],
+    key="skymap_upload",
+)
+searched_prob_threshold_option = crossmatch_expander.slider(
+    "Searched probability threshold",
+    min_value=0.0,
+    max_value=1.0,
+    value=0.7,
+    step=0.05,
+    key="searched_prob_threshold",
+)
+
+if skymap_upload is not None:
+    skymap_to_crossmatch = skymap_upload
+elif skymap_str != "":
+    skymap_to_crossmatch = skymap_str
+else:
+    skymap_to_crossmatch = None
+    
+if skymap_to_crossmatch is not None:
+    crossmatch_result = catalog.crossmatch(skymap_to_crossmatch)
+    crossmatch_result.plot(
+        filename="output.png",
+        searched_prob_threshold=float(searched_prob_threshold_option),
+        RA_unit=_unit_for_RA,
+        dark_theme=_plot_in_dark_theme,
+    )
+    st.session_state["show_crossmatch_res"] = True
+
+def reset_crossmatch():
+    st.session_state["show_crossmatch_res"] = False
+    st.session_state["skymap_str"] = ""
+crossmatch_expander.button("Reset", type="primary", key="reset_crossmatch", on_click=reset_crossmatch)
 
 # Write catalog as an interactive table
 catalog_df = catalog.to_pandas()
@@ -219,20 +276,15 @@ st.dataframe(
 )
 st.caption("Matched {}/{} entries in the catalog".format(len(catalog_df), st.session_state["nentries"]))
 
-from streamlit_javascript import st_javascript
-st_theme = st_javascript("""window.getComputedStyle(window.parent.document.getElementsByClassName("stApp")[0]).getPropertyValue("color-scheme")""")
-# st_theme can be either 'light' or 'dark'
-
 # Plot catalog
-_plot_in_dark_theme = False
-_unit_for_RA = "deg"
-if st_theme == "dark":
-    _plot_in_dark_theme = True
-if st.session_state["use_hms_in_RA"]:
-    _unit_for_RA = "hms"
+if not st.session_state["show_crossmatch_res"]:
+    catalog.plot(
+        filename="output.png",
+        RA_unit=_unit_for_RA,
+        dark_theme=_plot_in_dark_theme
+    )
 
-plot_catalog(catalog, RA_unit=_unit_for_RA, dark_theme=_plot_in_dark_theme)
-catalog_img.image("catalog.png")
+catalog_img.image("output.png")
 
 st.divider()
 # Footnote
