@@ -222,7 +222,7 @@ catalog = catalog.search(
 # Crossmatch expander
 crossmatch_expander = st.expander("Crossmatch with a transient", expanded=False)
 skymap_str = crossmatch_expander.text_input(
-    "Name of a transient event or URL to a FITS skymap",
+    "Name of a transient or URL to a FITS skymap",
     key="skymap_str",
     value="",
 )
@@ -251,8 +251,9 @@ if skymap_to_crossmatch is not None:
             dark_theme=_plot_in_dark_theme,
         )
         st.session_state["show_crossmatch_res"] = True
-    except:
-        pass # Fail silently
+    except Exception as e:
+        st.error(str(e))
+        st.session_state["show_crossmatch_res"] = False
 
 def reset_crossmatch():
     st.session_state["show_crossmatch_res"] = False
@@ -263,11 +264,6 @@ crossmatch_expander.button("Reset", type="primary", key="reset_crossmatch", on_c
 # Write catalog as an interactive table
 if st.session_state["show_crossmatch_res"]:
     df = crossmatch_result[crossmatch_result["searched probability"] <= float(searched_prob_threshold_option)].to_pandas()
-    column_names = df.columns.to_list()
-    # Move ref to the last column
-    column_names.remove("ref")
-    column_names.append("ref")
-    df = df[column_names]
     # Add back unit for searched area
     df.rename(columns={"searched area": "searched area [deg^2]"}, inplace=True)
 else:
@@ -278,10 +274,30 @@ if st.session_state.use_hms_in_RA:
     df.rename(columns={"RA": "RA [hms]", "DEC": "DEC [deg]"}, inplace=True)
 else:
     df.rename(columns={"RA": "RA [deg]", "DEC": "DEC [deg]"}, inplace=True)
+
+# Fix column display order
+column_names = df.columns.to_list()
+# Move ref to the last column
+column_names.remove("ref")
+column_names.append("ref")
+
 st.dataframe(
     df,
     hide_index=True,
-    column_config={"ref": st.column_config.LinkColumn("ref")},
+    column_order=column_names,
+    column_config={
+        "searched probability": st.column_config.NumberColumn(
+            "searched probability",
+            format="%.2f",
+            width=None,
+        ),
+        "searched area [deg^2]": st.column_config.NumberColumn(
+            "searched area [deg^2]",
+            format="%.2f",
+            width=None,
+        ),
+        "ref": st.column_config.LinkColumn("ref")
+    },
 )
 st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
 
