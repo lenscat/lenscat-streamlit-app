@@ -220,7 +220,7 @@ catalog = catalog.search(
 )
 
 # Crossmatch expander
-crossmatch_expander = st.expander("Crossmatch with a transient event", expanded=False)
+crossmatch_expander = st.expander("Crossmatch with a transient", expanded=False)
 skymap_str = crossmatch_expander.text_input(
     "Name of a transient event or URL to a FITS skymap",
     key="skymap_str",
@@ -281,6 +281,7 @@ else:
 st.dataframe(
     df,
     hide_index=True,
+    column_config={"ref": st.column_config.LinkColumn("ref")},
 )
 st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
 
