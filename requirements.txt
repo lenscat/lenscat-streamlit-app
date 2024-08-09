@@ -1,6 +1,6 @@
 streamlit
 streamlit-javascript
 pandas
-numpy
+numpy < 1.24
 matplotlib
 lenscat
