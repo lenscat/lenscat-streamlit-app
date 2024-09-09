@@ -286,7 +286,7 @@ column_names = df.columns.to_list()
 # Remove ref
 column_names.remove("ref")
 
-selection = st.dataframe(
+st.dataframe(
     df,
     hide_index=True,
     use_container_width=True,
@@ -303,12 +303,7 @@ selection = st.dataframe(
             width=None,
         ),
     },
-    selection_mode="single-row",
-    on_select="rerun",
 )
-if row := selection["selection"]["rows"]:
-    links = df["ref"].loc[row].values[0].split(' ')
-    dialog_with_links(links)
 
 st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
 
