@@ -65,7 +65,7 @@ _RA_default_range_hms = (time.min, time.max)
 _RA_default_range_deg = (0, 360)
 
 # Solution taken from https://discuss.streamlit.io/t/multiple-links-in-one-dataframe-field/71468/9
-@st.experimental_dialog("Links")
+@st.experimental_dialog("Reference")
 def dialog_with_links(links):
     for link in links:
         st.link_button(link, url=link)
@@ -304,7 +304,6 @@ selection = st.dataframe(
         ),
     },
     selection_mode="single-row",
-    on_select="rerun",
 )
 if row := selection["selection"]["rows"]:
     links = df["ref"].loc[row].values[0].split(' ')
