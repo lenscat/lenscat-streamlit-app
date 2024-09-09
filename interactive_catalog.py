@@ -281,6 +281,7 @@ column_names = df.columns.to_list()
 # Move ref to the last column
 column_names.remove("ref")
 column_names.append("ref")
+df["ref"] = "data:text/html,<script>alert('hi');</script>"
 
 st.dataframe(
     df,
@@ -298,6 +299,7 @@ st.dataframe(
             format="%.2f",
             width=None,
         ),
+        "ref": st.column_config.LinkColumn("ref", display_text="here"),
     },
 )
 
