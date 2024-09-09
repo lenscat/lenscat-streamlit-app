@@ -277,9 +277,8 @@ else:
 
 # Fix column display order
 column_names = df.columns.to_list()
-# Move ref to the last column
+# Remove ref
 column_names.remove("ref")
-column_names.append("ref")
 
 st.dataframe(
     df,
@@ -296,7 +295,6 @@ st.dataframe(
             format="%.2f",
             width=None,
         ),
-        "ref": st.column_config.LinkColumn("ref", width="large")
     },
 )
 st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
