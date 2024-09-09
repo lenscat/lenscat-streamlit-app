@@ -281,18 +281,6 @@ column_names = df.columns.to_list()
 # Move ref to the last column
 column_names.remove("ref")
 column_names.append("ref")
-doped_refs = []
-for idx in range(len(df)):
-    refs = df.loc[idx]["ref"]
-    if refs is not None:
-        links = refs.split(' ')
-        out = "data:text/html,<script>{}</script>".format(
-           "".join(["window.open('{}');".format(link) for link in links]) 
-        )
-    else:
-        out = ""
-    doped_refs.append(out)
-df["ref"] = doped_refs
 
 st.dataframe(
     df,
@@ -310,7 +298,7 @@ st.dataframe(
             format="%.2f",
             width=None,
         ),
-        "ref": st.column_config.LinkColumn("   ", display_text="refs"),
+        "ref": st.column_config.TextColumn("ref", width="large"),
     },
 )
 
