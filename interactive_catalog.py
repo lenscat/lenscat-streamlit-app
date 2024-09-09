@@ -307,7 +307,7 @@ selection = st.dataframe(
     on_select="rerun",
 )
 if row := selection["selection"]["rows"]:
-    links = df["ref"].loc[row].split(' ')
+    links = df["ref"].loc[row].values[0].split(' ')
     dialog_with_links(links)
 
 st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
