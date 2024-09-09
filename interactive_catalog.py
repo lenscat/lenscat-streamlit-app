@@ -296,7 +296,7 @@ st.dataframe(
             format="%.2f",
             width=None,
         ),
-        "ref": st.column_config.LinkColumn("ref")
+        "ref": st.column_config.LinkColumn("ref", width="large")
     },
 )
 st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
