@@ -64,12 +64,6 @@ def convert_to_zlens_range(zlens_min):
 _RA_default_range_hms = (time.min, time.max)
 _RA_default_range_deg = (0, 360)
 
-# Solution taken from https://discuss.streamlit.io/t/multiple-links-in-one-dataframe-field/71468/9
-@st.experimental_dialog("Reference")
-def dialog_with_links(links):
-    for link in links:
-        st.link_button(link, url=link)
-
 st.set_page_config(
     page_title="Interactive Web App for lenscat",
     page_icon="https://avatars.githubusercontent.com/u/157114494?s=200&v=4",
@@ -284,7 +278,9 @@ else:
 # Fix column display order
 column_names = df.columns.to_list()
 # Remove ref
+# Move ref to the last column
 column_names.remove("ref")
+column_names.append("ref")
 
 st.dataframe(
     df,
