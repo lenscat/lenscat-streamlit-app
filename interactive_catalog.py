@@ -299,7 +299,7 @@ st.dataframe(
             format="%.2f",
             width=None,
         ),
-        "ref": st.column_config.LinkColumn("ref", display_text="here"),
+        "ref": st.column_config.LinkColumn("   ", display_text="ref"),
     },
 )
 
