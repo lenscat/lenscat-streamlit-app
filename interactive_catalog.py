@@ -303,6 +303,9 @@ selection = st.dataframe(
             width=None,
         ),
     },
+    hide_index=True,
+    selection_mode="single-row",
+    on_select="rerun",
 )
 if row := selection["selection"]["rows"]:
     links = df["ref"].loc[row].split(' ')
