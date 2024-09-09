@@ -281,7 +281,14 @@ column_names = df.columns.to_list()
 # Move ref to the last column
 column_names.remove("ref")
 column_names.append("ref")
-df["ref"] = "data:text/html,<script>alert('hi');</script>"
+for idx in range(len(df)):
+    refs = df.loc[idx]["ref"]
+    if refs is not None:
+        links = refs.split(' ')
+        full_script = "data:text/html,<script>{}</script>".format(
+           "".join(["window.open('{}');".format(link) for link in links]) 
+        )
+        df.loc[idx]["ref"] = full_script
 
 st.dataframe(
     df,
