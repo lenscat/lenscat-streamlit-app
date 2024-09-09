@@ -64,6 +64,12 @@ def convert_to_zlens_range(zlens_min):
 _RA_default_range_hms = (time.min, time.max)
 _RA_default_range_deg = (0, 360)
 
+# Solution taken from https://discuss.streamlit.io/t/multiple-links-in-one-dataframe-field/71468/9
+@st.experimental_dialog("Links")
+def dialog_with_links(links):
+    for link in links:
+        st.link_button(link, url=link)
+
 st.set_page_config(
     page_title="Interactive Web App for lenscat",
     page_icon="https://avatars.githubusercontent.com/u/157114494?s=200&v=4",
@@ -280,7 +286,7 @@ column_names = df.columns.to_list()
 # Remove ref
 column_names.remove("ref")
 
-st.dataframe(
+selection = st.dataframe(
     df,
     hide_index=True,
     use_container_width=True,
@@ -298,6 +304,10 @@ st.dataframe(
         ),
     },
 )
+if row := selection["selection"]["rows"]:
+    links = df["ref"].loc[row].split(' ')
+    dialog_with_links(links)
+
 st.caption("Matched {}/{} entries in the catalog".format(len(df), st.session_state["nentries"]))
 
 # Plot catalog
