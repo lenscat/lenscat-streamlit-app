@@ -283,6 +283,7 @@ column_names.remove("ref")
 st.dataframe(
     df,
     hide_index=True,
+    use_container_width=True,
     column_order=column_names,
     column_config={
         "searched probability": st.column_config.NumberColumn(
