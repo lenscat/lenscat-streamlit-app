@@ -90,7 +90,7 @@ if "checked_update" not in st.session_state.keys():
     st.session_state["checked_update"] = False
 
 if not st.session_state["checked_update"]:
-    subprocess.run([f"{sys.executable}", "-m", "pip", "install", "lenscat", "--upgrade"])
+    # NOTE For now, we manually reboot the app every update
     st.session_state["checked_update"] = True
 
 import lenscat
