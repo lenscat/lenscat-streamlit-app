@@ -90,7 +90,7 @@ if "checked_update" not in st.session_state.keys():
     st.session_state["checked_update"] = False
 
 if not st.session_state["checked_update"]:
-    # NOTE For now, we manually reboot the app every update
+    subprocess.run([f"{sys.executable}", "-m", "pip", "install", "lenscat", "--upgrade"])
     st.session_state["checked_update"] = True
 
 import lenscat
@@ -226,6 +226,7 @@ skymap_str = crossmatch_expander.text_input(
     key="skymap_str",
     value="",
 )
+skymap_upload = crossmatch_expander.file_uploader("Upload a skymap here", type=["FITS"])
 _searched_prob_threshold_default = 0.7
 searched_prob_threshold_option = crossmatch_expander.slider(
     "Searched probability threshold",
@@ -236,11 +237,16 @@ searched_prob_threshold_option = crossmatch_expander.slider(
     key="searched_prob_threshold",
 )
 
-if skymap_str != "":
+if skymap_upload is not None:
+    f = open("skymap.fits", "wb")
+    f.write(skymap_upload.read())
+    f.close()
+    skymap_to_crossmatch = "skymap.fits"
+elif skymap_str != "":
     skymap_to_crossmatch = skymap_str
 else:
     skymap_to_crossmatch = None
-    
+
 if skymap_to_crossmatch is not None:
     try:
         crossmatch_result = catalog.crossmatch(skymap_to_crossmatch)
